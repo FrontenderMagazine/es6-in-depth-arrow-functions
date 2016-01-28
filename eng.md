@@ -28,6 +28,7 @@ It gets stranger. This arrow indicates a comment _only_ when it appears at the s
 
 Of course there is also the less-than-or-equal-to operator, `<=`. Perhaps you can find more arrows in your JS code, Hidden Pictures style, but let’s stop here and observe that _an arrow is missing_.
 
+|        |                       |
 |--------|-----------------------|
 | `<!--` | single-line comment   |
 | `-->`  | “goes to” operator    |
