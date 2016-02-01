@@ -18,59 +18,84 @@ _[ES6 In Depth][1] — это цикл статей о новых возможн
 Старые браузеры видели два неподдерживаемых тега и комментарий, и только новые
 браузеры видели в этом код JS.
 
+Чтобы поддерживать этот костыль, движок JavaScript в вашем браузере трактует
+символы `<!--` как начало однострочного комментария. Без шуток. Это в самом
+деле было частью языка всё это время и работает по сей день, не только сразу
+после открывающего тега `<script>`, но и вообще в любом месте кода JS. Это
+даже работает в Node.
 
+И между прочим, [этот стиль комментариев был впервые стандартизован в ES6][2].
+Но статья вовсе не про эти стрелки.
 
-To support this odd hack, the JavaScript engine in your browser treats the characters `<!--` as the start of a one-line comment. No joke. This has really been part of the language all along, and it works to this day, not just at the top of an inline `<script>` but everywhere in JS code. It even works in Node.
+Последовательность символов в виде стрелки `-->` также обозначает однострочный
+комментарий. Интересно, что в HTML комментарием считаются символы _перед_
+`-->`, а в JS комментарий — это всё, что _после_ `-->` и до конца строки.
 
-As it happens, [this style of comment is standardized for the first time in ES6.][2] But this isn’t the arrow we’re here to talk about.
-
-The arrow sequence `-->` also denotes a one-line comment. Weirdly, while in HTML characters _before_ the `-->` are part of the comment, in JS the rest of the line _after_ the `-->` is a comment.
-
-It gets stranger. This arrow indicates a comment _only_ when it appears at the start of a line. That’s because in other contexts, `-->` is an operator in JS, the “goes to” operator!
+А вот что ещё интересней. Эта стрелка обозначает комментарий _только_ если
+находится в начале строки. Это потому что в других контекстах в JS  `-->` —
+это оператор, оператор «направлается к»!
 
     function countdown(n) {
-      while (n --> 0)  // "n goes to zero"
+      while (n --> 0)  // "n направляется к нулю"
         alert(n);
       blastoff();
     }
 
-[This code really works.][3] The loop runs until `n` gets to 0. This too is _not_ a new feature in ES6, but a combination of familiar features, with a little misdirection thrown in. Can you figure out what’s going on here? As usual, the answer to the puzzle can be found [on Stack Overflow][4].
+[Этот код действительно работает.][3] Цикл выполняется, пока `n` не достигнет
+0. Это тоже _не_ появилось в ES6, а лишь сочетание старых возможностей и
+немного сбивающее с толку название. Сможете разобраться, как это работает?
+Как обычно, разгадку можно найти [на Stack Overflow][4].
 
-Of course there is also the less-than-or-equal-to operator, `<=`. Perhaps you can find more arrows in your JS code, Hidden Pictures style, but let’s stop here and observe that _an arrow is missing_.
+Разумеется, есть ещё оператор «меньше или равно», `<=`. Возможно, вы найдёте
+в коде JS и другие стрелки, как в играх Поиск Предметов, но давайте
+остановимся и обнаружим, что _одной стрелки не хватает_.
 
-|        |                       |
-|--------|-----------------------|
-| `<!--` | single-line comment   |
-| `-->`  | “goes to” operator    |
-| `<=`   | less than or equal to |
-| `=>`   | ???                   |
+|        |                           |
+|--------|---------------------------|
+| `<!--` | однострочный комментарий  |
+| `-->`  | оператор «направляется к» |
+| `<=`   | меньше или равно          |
+| `=>`   | ???                       |
 
-What happened to `=>`? Today, we find out.
+Что случилось с `=>`? Сегодня и узнаем.
 
-First, let’s talk a bit about functions.
+Но сначала немного о функциях.
 
-### Function expressions are everywhere
+## Функции-выражения повсюду
 
-A fun feature of JavaScript is that any time you need a function, you can just type that function right in the middle of running code.
+Забавная особенность JavaScript состоит в том, что если вам нужна функция, то
+вы можете написать функцию, прямо посреди исполняемого кода.
 
-For example, suppose you are trying to tell the browser what to do when the user clicks on a particular button. You start typing:
+Например, предположим, вы хотите сказать браузеру, что ему следует делать,
+если пользователь нажмёт определённую кнопку. Вы начинаете печатать:
 
     $("#confetti-btn").click(
 
-jQuery’s `.click()` method takes one argument: a function. No problem. You can just type in a function right here:
+Метод `.click()` jQuery принимает один аргумент — функцию. Без проблем. Вы
+можете впечатать функцию прямо туда:
 
     $("#confetti-btn").click(function (event) {
       playTrumpet();
       fireConfettiCannon();
     });
 
-Writing code like this comes quite naturally to us now. So it’s strange to recall that before JavaScript popularized this kind of programming, many languages _did not have this feature_. Of course Lisp had function expressions, also called <dfn>lambda functions</dfn>, in 1958. But C++, Python, C#, and Java all existed for years without them.
+Мы уже привыкли писать так, это для нас уже вполне естественно. И странно
+вспоминать, что до того, как благодаря JavaScript такой подход к
+программированию стал популярен, во многих языках _не было такой
+функциональности_. Само собой, в Lisp были функции-выражения, они же
+_лямбда-функции_, ещё с 1958. Но C++, Python, C# и Java, просущестовали годы
+без них.
 
-Not anymore. All four have lambdas now. Newer languages universally have lambdas built in. We have JavaScript to thank for this—and early JavaScript programmers who fearlessly built libraries that depended heavily on lambdas, leading to widespread adoption of the feature.
+Но теперь всё. Во всех четырёх теперь есть лямбды. Во всех более новых языках
+есть свтроенная поддержка лямбд. Мы должны поблагодарить за это JavaScript — и
+ранних программистов на JavaScript, которые бесстрашно создавали сильно
+зависящие от лямбд библиотеки, и которые тем самым привели к повсеместному
+принятию этой функциональности.
 
-It is just slightly sad, then, that of all the languages I’ve mentioned, JavaScript’s syntax for lambdas has turned out to be the wordiest.
+Хотя немного жаль, что из всех упомянутых языков, в JavaScript синтаксис лямбд
+оказался самым многословным.
 
-    // A very simple function in six languages.
+    // Очень простые функции на шести языках.
     function (a) { return a > 0; } // JS
     [](int a) { return a > 0; }  // C++
     (lambda (a) (> a 0))  ;; Lisp
@@ -78,9 +103,9 @@ It is just slightly sad, then, that of all the languages I’ve mentioned, JavaS
     a => a > 0  // C#
     a -> a > 0  // Java
 
-### A new arrow in your quiver
+## Новая стрела в ваш колчан
 
-ES6 introduces a new syntax for writing functions.
+В ES6 появился новый синтаксис функций.
 
     // ES5
     var selected = allJobs.filter(function (job) {
@@ -90,11 +115,19 @@ ES6 introduces a new syntax for writing functions.
     // ES6
     var selected = allJobs.filter(job => job.isSelected());
 
-When you just need a simple function with one argument, the new arrow function syntax is simply `_Identifier_ => _Expression_`. You get to skip typing `function` and `return`, as well as some parentheses, braces, and a semicolon.
+Если вам нужна простая функция с одним аргументом, то синтаксис новых,
+стрелочных, функций — это просто `Идентификатор => Выражение`. Не нужно
+печатать ни `function`, ни `return`, ни круглых скобок с фигурными и точкой с
+запятой.
 
-(I am personally very grateful for this feature. Not having to type `function` is important to me, because I inevitably type `functoin` instead and have to go back and correct it.)
+(Лично я очень благодарен за этот синтаксис. Для меня очень важно, что
+печатать `function` больше не надо, потому что у меня постоянно вместо этого
+получается `functoin`, и мне приходится возвращаться и исправлять опечатку.)
 
-To write a function with multiple arguments (or no arguments, or [rest parameters or defaults][5], or a [destructuring][6] argument) you’ll need to add parentheses around the argument list.
+Чтобы создать функцию с несколькими аргументами (или без аргументов, или с
+[остаточными параметрами или значениями по умолчанию][5], или с
+[деструктурированием][6] в аргументе), нужно добавить скобки вокруг списка
+аргументов.
 
     // ES5
     var total = values.reduce(function (a, b) {
