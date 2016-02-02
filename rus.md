@@ -87,7 +87,7 @@ _лямбда-функции_, ещё с 1958. Но C++, Python, C# и Java, п�
 без них.
 
 Но теперь всё. Во всех четырёх теперь есть лямбды. Во всех более новых языках
-есть свтроенная поддержка лямбд. Мы должны поблагодарить за это JavaScript — и
+есть вcтроенная поддержка лямбд. Мы должны поблагодарить за это JavaScript — и
 ранних программистов на JavaScript, которые бесстрашно создавали сильно
 зависящие от лямбд библиотеки, и которые тем самым привели к повсеместному
 принятию этой функциональности.
@@ -137,11 +137,16 @@ _лямбда-функции_, ещё с 1958. Но C++, Python, C# и Java, п�
     // ES6
     var total = values.reduce((a, b) => a + b, 0);
 
-I think it looks pretty nice.
+Мне кажется, выглядит очень неплохо.
 
-Arrow functions work just as beautifully with functional tools provided by libraries, like [Underscore.js][7] and [Immutable][8]. In fact, the examples in [Immutable’s documentation][9] are all written in ES6, so many of them already use arrow functions.
+Стрелочные функции точно так же великолепно работают с функцональными
+утилитами из библиотек наподобие [Underscore.js][7] и [Immutable][8]. В
+сущности, все примеры кода в [документации Immutable][9] написаны на ES6, так
+что многие из них уже используют стрелочные функции.
 
-What about not-so-functional settings? Arrow functions can contain a block of statements instead of just an expression. Recall our earlier example:
+А что насчёт не столь функциональных случаев? Стрелочные функции могут
+содержать блок инструкций вместо одиночного выражения. Вернёмся к более
+раннему примеру:
 
     // ES5
     $("#confetti-btn").click(function (event) {
@@ -149,7 +154,7 @@ What about not-so-functional settings? Arrow functions can contain a block of st
       fireConfettiCannon();
     });
 
-Here’s how it will look in ES6:
+Вот так это будет выглядеть в ES6:
 
     // ES6
     $("#confetti-btn").click(event => {
@@ -157,29 +162,48 @@ Here’s how it will look in ES6:
       fireConfettiCannon();
     });
 
-A minor improvement. The effect on code using [Promises][10] can be more dramatic, as the `}).then(function (result) {` lines can pile up.
+Небольшое улучшение. Эффект при использовании [промисов][10] может быть более
+заметным из-за нагроможения строчек `}).then(function (result) {`.
 
-Note that an arrow function with a block body does not automatically return a value. Use a `return` statement for that.
+Обратите внимание, что стрелочные функции с телом в виде блока не возвращают
+значение автоматически. Используйте в таких случаях инструкцию `return`.
 
-There is one caveat when using arrow functions to create plain objects. Always wrap the object in parentheses:
+Есть ещё один нюанс, когда стрелочные функции используются для создания
+объектов. Всегда оборачивайте объект в скобки:
 
-    // create a new empty object for each puppy to play with
-    var chewToys = puppies.map(puppy => {});   // BUG!
-    var chewToys = puppies.map(puppy => ({})); // ok
+    // создаём каждому щенку по пустому объекту в качестве игрушки
+    var chewToys = puppies.map(puppy => {});   // БАГ!
+    var chewToys = puppies.map(puppy => ({})); // всё хорошо
 
-Unfortunately, an empty object `{}` and an empty block `{}` look exactly the same. The rule in ES6 is that `{` immediately following an arrow is always treated as the start of a block, never the start of an object. The code `puppy => {}` is therefore silently interpreted as an arrow function that does nothing and returns `undefined`.
+Увы, пустой объект `{}` и пустой блок `{}` выглядят абсолютно одинаково.
+Правила ES6 гласят: `{` сразу после стрелки всегда трактуются как начало
+блока и никогда не считаются началом объекта. Поэтому код `puppy => {}`
+молча интерпретируется как стрелочкая функция, которая ничего не делает и
+возвращает `undefined`.
 
-Even more confusing, an object literal like `{key: value}` looks exactly like a block containing a labeled statement—at least, that’s how it looks to your JavaScript engine. Fortunately `{` is the only ambiguous character, so wrapping object literals in parentheses is the only trick you need to remember.
+Ещё больше сбивает с толку то, что литерал вроде `{key: value}` выглядит в
+точности как блок, содержащий инструкцию с меткой; по крайней мере, он так
+выглядит для вашего движка JavaScript. К счастью, `{` — это единственный
+неоднозначный символ, так что единственный приём, которым вам следует
+запомнить — это оборачивание литералов объектов в скобки.
 
-### What’s `this`?
+## Что `this` такое?
 
-There is one subtle difference in behavior between ordinary `function` functions and arrow functions. **Arrow functions do not have their own `this` value.** The value of `this` inside an arrow function is always inherited from the enclosing scope.
+Есть одно хитрое отличие в поведении обычных функций-`function` и стрелочных
+функций. **У стрелочных функций нету собственного значения `this`.** Значение
+`this` внутри стрелочной функции всегда наследуется из окружающего
+лексического окружения.
 
-Before we try and figure out what that means in practice, let’s back up a bit.
+Перед тем, как мы постараемся выяснить, что это значит на практике, давайте
+ненадолго обратимся к основам.
 
-How does `this` work in JavaScript? Where does its value come from? [There’s no short answer.][11] If it seems simple in your head, it’s because you’ve been dealing with it for a long time!
+Как в JavaScript работает `this`? Откуда берётся это значение? На этот вопрос
+[нет короткого ответа][11]. Если для вашего мозга это просто, это лишь из-за
+того, что вы с этим долго работали!
 
-One reason this question comes up so often is that `function` functions receive a `this` value automatically, whether they want one or not. Have you ever written this hack?
+Одна из причин, почему этот вопрос всплывает так часто, это то, что
+функции-`function` получают значение `this` автоматически, неважно, нужно оно
+им или нет. Вы когда-нибудь применяли такой приём?
 
     {
       ...
@@ -192,7 +216,13 @@ One reason this question comes up so often is that `function` functions receive 
       ...
     }
 
-Here, what you’d _like_ to write in the inner function is just `this.add(piece)`. Unfortunately, the inner function doesn’t inherit the outer function’s `this` value. Inside the inner function, `this` will be `window` or `undefined`. The temporary variable `self` serves to smuggle the outer value of `this` into the inner function. (Another way is to use `.bind(this)` on the inner function. Neither way is particularly pretty.)
+Здесь вам бы _хотелось_ написать внутреннюю функцию просто как
+`this.add(piece)`. К несчастью, внутренняя функция не наследует `this`
+внешней. Во внутренней функции `this` будет `window` или `undefined`.
+Временная переменная `self` нужна, чтобы протащить внешнее значение `this`
+во внутреннюю функцию. (Другой способ — это использовать `.bind(this)` на
+внутренней функции. Но и этот, ни другой способ особым изяществом не
+отличаются.)
 
 In ES6, `this` hacks mostly go away if you follow these rules:
 
