@@ -221,13 +221,17 @@ _лямбда-функции_, ещё с 1958. Но C++, Python, C# и Java, п�
 внешней. Во внутренней функции `this` будет `window` или `undefined`.
 Временная переменная `self` нужна, чтобы протащить внешнее значение `this`
 во внутреннюю функцию. (Другой способ — это использовать `.bind(this)` на
-внутренней функции. Но и этот, ни другой способ особым изяществом не
+внутренней функции. Но оба эти способа особым изяществом не
 отличаются.)
 
-In ES6, `this` hacks mostly go away if you follow these rules:
+В ES6 трюки с `this` по большей части не нужны, если вы придерживаетесь этих
+правил:
 
-*   Use non-arrow functions for methods that will be called using the `object.method()` syntax. Those are the functions that will receive a _meaningful_ `this` value from their caller.
-*   Use arrow functions for everything else.
+*   Использовать не-стрелочные функции для методов, которые будут вызываться
+    с использованием синтаксиса `объект.метод()`. Эти функции получат
+    вменяемый `this` от вызывающего кода.
+
+*   Использовать стрелочные функции для всего остального.
 
     // ES6
     {
@@ -238,11 +242,14 @@ In ES6, `this` hacks mostly go away if you follow these rules:
       ...
     }
 
-In the ES6 version, note that the `addAll` method receives `this` from its caller. The inner function is an arrow function, so it inherits `this` from the enclosing scope.
+Обратите внимание, в этой версии на ES6 метод `addAll` получает `this` от
+вызывающего кода. Внутренняя функция — стрелочная, так что она наследует
+`this` из лексического окружения.
 
-As a bonus, ES6 also provides a shorter way to write methods in object literals! So the code above can be simplified further:
+Что приятно, ES6 также предоставляет более краткий способ записи методов в
+литералах объектов! Так что код выше можно сделать ещё проще:
 
-    // ES6 with method syntax
+    // ES6 с сокращённым синтаксисом методов
     {
       ...
       addAll(pieces) {
@@ -251,44 +258,84 @@ As a bonus, ES6 also provides a shorter way to write methods in object literals!
       ...
     }
 
-Between methods and arrows, I might never type `functoin` again. It’s a nice thought.
+С такой записью методов и стрелочными функциями возможно, я никогда больше не
+напечатаю `functoin`. Это приятно осознавать.
 
-There’s one more minor difference between arrow and non-arrow functions: arrow functions don’t get their own `arguments` object, either. Of course, in ES6, you’d probably rather use a rest parameter or default value anyway.
+Есть ещё одна небольшая разница между стрелочными и не-стрелочными функциями,
+стрелочные функции не получают собственного объекта `arguments`. Разумеется,
+в ES6 и вы и так скорее предпочтёте остаточные параметры или значения по
+умолчанию.
 
-### Using arrows to pierce the dark heart of computer science
+### Пронзаем стрелами тёмное сердце информатики
 
-We’ve talked about the many practical uses of arrow functions. There’s one more possible use case I’d like to talk about: ES6 arrow functions as a learning tool, to uncover something deep about the nature of computation. Whether that is practical or not, you’ll have to decide for yourself.
+Мы уже обсудили множество практических применений стрелочных функций. Есть ещё
+одно применение, о котором я хочу рассказать — стрелочные функции ES6 как
+инструмент для обучения, как способ раскрыть глубинные тайны природы
+вычисления. Практично это, или нет — вам решать самим.
 
-In 1936, Alonzo Church and Alan Turing independently developed powerful mathematical models of computation. Turing called his model _a-machines_, but everyone instantly started calling them Turing machines. Church wrote instead about functions. His model was called the [λ-calculus][12]. (λ is the lowercase Greek letter lambda.) This work was the reason Lisp used the word `LAMBDA` to denote functions, which is why we call function expressions “lambdas” today.
+В 1936 Алонзо Чёрч и Алан Тьюринг независимо друг от друга разработали мощные
+математические вычислительные модели. Тьюринг назвал свою модель _а-машины_,
+но остальные немедленно окрестили их машинами Тьюринга. Чёрч, напротив, писал
+о функциях. Его модель называлась [λ-исчисление][12]. (λ — это строчная
+греческая буква лямбда.) Его работа послужила причиной тому, что в Lisp
+для обозначений функций использовалось слово `LAMBDA`, и поэтому наши дни мы
+называем функции-выражения лямбдами.
 
-But what is the λ-calculus? What is “model of computation” supposed to mean?
+Но что такое λ-исчисление? И что имеется в виду под вычислительной моделью?
 
-It’s hard to explain in just a few words, but here is my attempt: the λ-calculus is one of the first programming languages. It was not _designed_ to be a programming language—after all, stored-program computers wouldn’t come along for another decade or two—but rather a ruthlessly simple, stripped-down, purely mathematical idea of a language that could express any kind of computation you wished to do. Church wanted this model in order to prove things about computation in general.
+Непросто объяснить это в двух словах, но я попробую: λ-исчисление — это один
+из первых языков программирования. Оно не было _спроектировано_ как язык
+программирования (в конце концов, до компьютеров, хранящих программу в памяти,
+было на тот момент лет десять или двадцать), а скорее это была бесцеремонно
+простая, обнажённая, чисто математическая идея языка, который мог бы выразить
+любой вид вычислений, какой только захочется. Чёрчу нужна была эта модель,
+чтобы доказать свои мысли о вычислении в целом.
 
-And he found that he only needed one thing in his system: _functions._
+И он обнаружил, что в его модели нужно только одно — _функции_.
 
-Think how extraordinary this claim is. Without objects, without arrays, without numbers, without `if` statements, `while` loops, semicolons, assignment, logical operators, or an event loop, it is possible to rebuild every kind of computation JavaScript can do, from scratch, using only functions.
+Только представьте, насколько необычайно это заявление! Без объектов, без
+массивов, без чисел, без инструкций `if`, циклов `while`, точек с запятыми,
+присваиваний, логических операторов или событийных циклов возможно с нуля
+при помощи одних лишь функций воплотить любой вид вычислений, какой только
+возможен в JavaScript.
 
-Here is an example of the sort of “program” a mathematician could write, using Church’s λ notation:
+Например, вот такую «программу», могут написать математики в λ-нотации Чёрча:
 
     fix = λf.(λx.f(λv.x(x)(v)))(λx.f(λv.x(x)(v)))
 
-The equivalent JavaScript function looks like this:
+Эквивалентная функция JavaScript выглядит так:
 
     var fix = f => (x => f(v => x(x)(v)))
                    (x => f(v => x(x)(v)));
 
-That is, JavaScript contains an implementation of the λ-calculus that actually runs. _The λ-calculus is in JavaScript._
+То есть, JavaScript содержит работающую реализацию λ-исчисления.
+_λ-исчисление есть в JavaScript._
 
-The stories of what Alonzo Church and later researchers did with the λ-calculus, and how it has quietly insinuated itself into almost every major programming language, are beyond the scope of this blog post. But if you’re interested in the foundations of computer science, or you’d just like to see how a language with nothing but functions can do things like loops and recursion, you could do worse than to spend some rainy afternoon looking into [Church numerals][13] and [fixed-point combinators][14], and playing with them in your Firefox console or [Scratchpad][15]. With ES6 arrows on top of its other strengths, JavaScript can reasonably claim to be the best language for exploring the λ-calculus.
+Истории о том, как Алонзо Чёрч и поздние исследователи развивали λ-исчисление,
+и о том, как оно незаметно проникло в практически всё заметные языки
+программирования, находятся уже за пределами тематики этой статьи. Но если вы
+заинтересовались основателями информатики, или хотели бы взглянуть на то, как
+в языке, в котором нет ничего, кроме функций, можно делать вещи вроде циклов и
+рекурсии, то вы могли бы в какой-нибудь пасмурный день почитать про
+[нотацию Чёрча][13] и [комбинаторы неподвижной точки][14] и поиграться с ними
+в консоли Firefox или [Scratchpad][15]. Со стрелочными функциями, и другими
+его сильными сторонами, JavaScript можно с уверенностью назвать лучшим языком
+для ознакомления с λ-исчислением.
 
-### When can I use arrows?
+### Когда я смогу пользоваться стрелками?
 
-ES6 arrow functions were implemented in Firefox by me, back in 2013. Jan de Mooij made them fast. Thanks to Tooru Fujisawa and ziyunfei for patches.
+Стрелочные функции из ES6 были реализованы в Firefox мной, ещё в 2013.
+Jan de Mooij сделал их быстрыми. Спасибо Tooru Fujisawa и ziyunfei за патчи.
 
-Arrow functions are also implemented in the Microsoft Edge preview release. They’re also available in [Babel][16], [Traceur][17], and [TypeScript][18], in case you’re interested in using them on the Web right now.
+Стрелочные функции также реализованы в предварительной версии Microsoft Edge.
+Они также доступны в [Babel][16], [Traceur][17] и [TypeScript][18], на случай,
+если вы хотите начать использовать их в вебе прямо сейчас.
 
-Our next topic is one of the stranger features in ES6. We’ll get to see `typeof x` return a totally new value. We’ll ask: When is a name not a string? We’ll puzzle over the meaning of equality. It’ll be weird. So please join us next week as we look at ES6 symbols in depth.
+Нашей следующей темой будет одна из странных особенностей ES6. Мы увидим, что
+`typeof x` возвращает совершенно новое значение. Мы зададимся вопросом: когда
+имя не является строкой? Мы переосмыслим понятие равенства. Это будет
+необычно. Так что присоединяйтесь на следующей неделе, и мы рассмотрим символы
+ES6 в деталях.
 
 
 [1]: https://hacks.mozilla.org/category/es6-in-depth/
