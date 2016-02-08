@@ -348,12 +348,12 @@ ES6 в деталях.
 [7]: http://underscorejs.org/
 [8]: https://facebook.github.io/immutable-js/
 [9]: https://facebook.github.io/immutable-js/docs/#/
-[10]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise
+[10]: https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Promise
 [11]: http://stackoverflow.com/questions/3127429/how-does-the-this-keyword-work
-[12]: https://en.wikipedia.org/wiki/Lambda_calculus
+[12]: https://ru.wikipedia.org/wiki/%D0%9B%D1%8F%D0%BC%D0%B1%D0%B4%D0%B0-%D0%B8%D1%81%D1%87%D0%B8%D1%81%D0%BB%D0%B5%D0%BD%D0%B8%D0%B5
 [13]: https://en.wikipedia.org/wiki/Church_encoding
 [14]: https://en.wikipedia.org/wiki/Fixed-point_combinator#Strict_fixed_point_combinator
-[15]: https://developer.mozilla.org/en-US/docs/Tools/Scratchpad
+[15]: https://developer.mozilla.org/ru/docs/Tools/%D0%A7%D0%B5%D1%80%D0%BD%D0%BE%D0%B2%D0%B8%D0%BA
 [16]: http://babeljs.io/
 [17]: https://github.com/google/traceur-compiler#what-is-traceur
 [18]: http://www.typescriptlang.org/
