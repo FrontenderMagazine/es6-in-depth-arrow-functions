@@ -236,14 +236,14 @@ JavaScript — и ранних JavaScript-программистов, котор
 * Использовать стрелочные функции для всего остального.
 
 ```
-    // ES6
-    {
-      ...
-      addAll: function addAll(pieces) {
-        _.each(pieces, piece => this.add(piece));
-      },
-      ...
-    }
+// ES6
+{
+  ...
+  addAll: function addAll(pieces) {
+    _.each(pieces, piece => this.add(piece));
+  },
+  ...
+}
 ```
 
 Обратите внимание, в этой версии на ES6 метод `addAll` получает `this` от
